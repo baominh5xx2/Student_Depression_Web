@@ -1,0 +1,135 @@
+.prediction-modal .MuiPaper-root {
+  max-height: 90vh;
+  min-width: 80vw !important;
+}
+
+.prediction-modal .MuiDialog-paper {
+  width: 90% !important;
+  max-width: 1400px !important;
+}
+
+/* Layout for side-by-side columns */
+.modal-content-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 20px;
+  height: 65vh; /* Fixed height for container */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.user-data-column {
+  flex: 1;
+  max-width: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.assessment-result-column {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45%;
+}
+
+/* Table styling */
+.section-header {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.MuiTableContainer-root {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 100% !important;
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Result container styling */
+.result-container {
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.depression-positive {
+  background-color: rgba(255, 0, 0, 0.05);
+}
+
+.depression-negative {
+  background-color: rgba(0, 255, 0, 0.05);
+}
+
+.result-title {
+  font-size: 1.25rem;
+  margin-bottom: 20px;
+}
+
+.result-icon {
+  margin-bottom: 24px;
+}
+
+.icon-error, .icon-success {
+  font-size: 120px !important;
+}
+
+.icon-error {
+  color: #d32f2f;
+}
+
+.icon-success {
+  color: #2e7d32;
+}
+
+.result-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.error-text {
+  color: #d32f2f;
+}
+
+.success-text {
+  color: #2e7d32;
+}
+
+.result-description {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.result-disclaimer {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 20px;
+}
+
+.close-button {
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 960px) {
+  .modal-content-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .user-data-column, .assessment-result-column {
+    max-width: 100%;
+  }
+}
