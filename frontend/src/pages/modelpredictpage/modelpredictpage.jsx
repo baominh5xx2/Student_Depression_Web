@@ -3,6 +3,7 @@ import './modelpredictpage.css';
 import Sidebar from '../../components/siderbar/siderbar';
 import ModalPrediction from '../../components/modal_prediction/modal_prediction';
 import { Button } from '@mui/material';
+import { predictDepression } from "../../services/prediction";
 
 function ModelPredictPage() {
   const [personalInfo, setPersonalInfo] = useState({
@@ -105,14 +106,45 @@ function ModelPredictPage() {
   ));
 
   // Handle form submission and show modal
-  const handleSubmit = () => {
-    // In a real application, you would send the data to your backend for prediction
-    // For this demo, we'll just open the modal with the form data
-    
-    // Simulating a prediction result (in real app, this would come from API)
-    // const result = Math.random() > 0.5; // Randomly true or false
-    
-    setOpenModal(true);
+  const handleSubmit = async () => {
+    // Chuẩn hóa dữ liệu gửi lên backend
+    const payload = {
+      Age: Number(personalInfo.age),
+      Academic_Pressure: Number(academicInfo.academicPressure),
+      Work_Pressure: Number(socialInfo.workPressure),
+      CGPA: Number(academicInfo.gpa),
+      Study_Satisfaction: Number(academicInfo.studySatisfaction),
+      Job_Satisfaction: Number(socialInfo.jobSatisfaction),
+      Sleep_Duration: Number(healthInfo.sleepDuration),
+      Suicidal_Thoughts: healthInfo.suicidalThoughts === "yes" ? 1 : 0,
+      Work_Study_Hours: Number(academicInfo.studyHours),
+      Financial_Stress: socialInfo.financialStress === "yes" ? 1 : 0, // Sửa chỗ này
+      Family_History_of_Mental_Illness: healthInfo.familyHistory === "yes" ? 1 : 0,
+      Gender: personalInfo.gender.charAt(0).toUpperCase() + personalInfo.gender.slice(1), // "male" -> "Male"
+      Profession: "Student", // hoặc lấy từ form nếu có
+      Dietary_Habits: healthInfo.dietaryHabits.charAt(0).toUpperCase() + healthInfo.dietaryHabits.slice(1), // "healthy" -> "Healthy"
+      Degree: (() => {
+        switch (personalInfo.major) {
+          case "bachelor_education": return "B.Ed";
+          case "bachelor_commerce": return "B.Com";
+          case "bachelor_architecture": return "B.Arch";
+          case "bachelor_computer": return "BCA";
+          case "class_12": return "Class 12";
+          default: return "BCA";
+        }
+      })()
+    };
+
+    // In ra console để debug
+    console.log("Payload gửi lên backend:", payload);
+
+    try {
+      const result = await predictDepression(payload);
+      setPredictionResult(result.prediction === 1); // true nếu có nguy cơ trầm cảm
+      setOpenModal(true);
+    } catch (error) {
+      alert("Prediction failed: " + error.message);
+    }
   };
 
   // Close modal
@@ -212,8 +244,9 @@ function ModelPredictPage() {
                 onChange={handleHealthInfoChange}
               >
                 <option value=""></option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="yes">Healthy</option>
+                <option value="yes">Moderate</option>
+                <option value="no">Unhealthy</option>
               </select>
             </div>
             <div className="form-group">
