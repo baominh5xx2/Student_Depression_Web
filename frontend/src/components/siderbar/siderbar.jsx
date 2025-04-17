@@ -12,7 +12,7 @@ function Sidebar() {
         {/* Space for logo/image */}
       </div>
       <div className="sidebar-nav">
-        <h2 className="sidebar-title">Support for classifying students with depression</h2>
+        <h2 className="sidebar-title">SUPPORT CLASSIFY DEPRESSION</h2>
         <div className="sidebar-menu">
           <Link to="/model-predict" className="sidebar-item-link">
             <div className={`sidebar-item ${currentPath === '/model-predict' ? 'active' : ''}`}>
