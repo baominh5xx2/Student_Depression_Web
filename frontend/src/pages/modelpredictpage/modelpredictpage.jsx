@@ -116,23 +116,30 @@ function ModelPredictPage() {
       Study_Satisfaction: Number(academicInfo.studySatisfaction),
       Job_Satisfaction: Number(socialInfo.jobSatisfaction),
       Sleep_Duration: Number(healthInfo.sleepDuration),
-      Suicidal_Thoughts: healthInfo.suicidalThoughts === "yes" ? 1 : 0,
+      Suicidal_Thoughts: Number(healthInfo.suicidalThoughts === "yes"),
       Work_Study_Hours: Number(academicInfo.studyHours),
-      Financial_Stress: socialInfo.financialStress === "yes" ? 1 : 0, // Sửa chỗ này
-      Family_History_of_Mental_Illness: healthInfo.familyHistory === "yes" ? 1 : 0,
-      Gender: personalInfo.gender.charAt(0).toUpperCase() + personalInfo.gender.slice(1), // "male" -> "Male"
-      Profession: "Student", // hoặc lấy từ form nếu có
-      Dietary_Habits: healthInfo.dietaryHabits.charAt(0).toUpperCase() + healthInfo.dietaryHabits.slice(1), // "healthy" -> "Healthy"
-      Degree: (() => {
-        switch (personalInfo.major) {
-          case "bachelor_education": return "B.Ed";
-          case "bachelor_commerce": return "B.Com";
-          case "bachelor_architecture": return "B.Arch";
-          case "bachelor_computer": return "BCA";
-          case "class_12": return "Class 12";
-          default: return "BCA";
+      Financial_Stress: Number(socialInfo.financialStress === "yes"),
+      Family_History_of_Mental_Illness: Number(healthInfo.familyHistory === "yes"),
+      Gender_Male: Number(personalInfo.gender === "male"),
+      Gender_Female: Number(personalInfo.gender === "female"),
+      Profession_Student: 1,
+      [(() => {
+        switch (healthInfo.dietaryHabits) {
+          case "moderate": return 'Dietary_Habits_Moderate';
+          case "unhealthy": return 'Dietary_Habits_Unhealthy';
+          default: return 'Dietary_Habits_Others';
         }
-      })()
+      })()]: 1,
+      [(() => {
+        switch (personalInfo.major) {
+          case "bachelor_education": return 'Degree_B.Ed';
+          case "bachelor_commerce": return 'Degree_B.Com';
+          case "bachelor_architecture": return 'Degree_B.Arch';
+          case "bachelor_computer": return 'Degree_BCA';
+          case "class_12": return 'Degree_Class12';
+          default: return 'Degree_BCA';
+        }
+      })()]: 1
     };
 
     // In ra console để debug
@@ -244,9 +251,9 @@ function ModelPredictPage() {
                 onChange={handleHealthInfoChange}
               >
                 <option value=""></option>
-                <option value="yes">Healthy</option>
-                <option value="yes">Moderate</option>
-                <option value="no">Unhealthy</option>
+                <option value="moderate">Moderate</option>
+                <option value="unhealthy">Unhealthy</option>
+                <option value="others">Others</option>
               </select>
             </div>
             <div className="form-group">
