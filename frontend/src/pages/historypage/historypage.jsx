@@ -17,37 +17,58 @@ function HistoryPage() {
         
         // Process data to match our expected format
         const processedData = data.map(item => {
-          // Extract info from input_data or use defaults
-          const personalInfo = item.input_data?.personalInfo || {};
-          const healthInfo = item.input_data?.healthInfo || {};
-          const academicInfo = item.input_data?.academicInfo || {};
-          const socialInfo = item.input_data?.socialInfo || {};
+          // Extract basic info from input_data
+          const inputData = item.input_data || {};
+          
+          // Decode gender from one-hot encoding
+          let gender = "N/A";
+          if (inputData['Gender_Male'] === 1) gender = "Male";
+          else if (inputData['Gender_Female'] === 1) gender = "Female";
+          
+          // Decode dietary habits
+          let dietaryHabits = "N/A";
+          if (inputData['Dietary Habits_Moderate'] === 1) dietaryHabits = "Moderate";
+          else if (inputData['Dietary Habits_Unhealthy'] === 1) dietaryHabits = "Unhealthy";
+          else if (inputData['Dietary Habits_Others'] === 1) dietaryHabits = "Others";
+          
+          // Decode degree/major
+          let major = "N/A";
+          if (inputData['Degree_B.Ed'] === 1) major = "Bachelor of Education";
+          else if (inputData['Degree_B.Com'] === 1) major = "Bachelor of Commerce";
+          else if (inputData['Degree_B.Arch'] === 1) major = "Bachelor of Architecture";
+          else if (inputData['Degree_BCA'] === 1) major = "Bachelor of Computer Applications";
+          else if (inputData['Degree_Class12'] === 1) major = "Class 12";
+          
+          // Decode yes/no fields
+          const suicidalThoughts = inputData['Suicidal_Thoughts'] === 1 ? "Yes" : "No";
+          const financialStress = inputData['Financial Stress'] === 1 ? "Yes" : "No";
+          const familyHistory = inputData['Family History of Mental Illness'] === 1 ? "Yes" : "No";
           
           return {
             id: item._id,
             date: new Date(item.timestamp).toLocaleDateString(),
             personalInfo: {
-              fullName: item.user_name || personalInfo.fullName || "Unknown",
-              age: personalInfo.age || "N/A",
-              gender: personalInfo.gender || "N/A",
-              major: personalInfo.major || "N/A"
+              fullName: item.user_name || "Unknown",
+              age: inputData['Age'] || "N/A",
+              gender: gender,
+              major: major
             },
             healthInfo: {
-              sleepDuration: healthInfo.sleepDuration || "N/A",
-              dietaryHabits: healthInfo.dietaryHabits || "N/A",
-              suicidalThoughts: healthInfo.suicidalThoughts || "N/A",
-              familyHistory: healthInfo.familyHistory || "N/A"
+              sleepDuration: inputData['Sleep Duration'] || "N/A",
+              dietaryHabits: dietaryHabits,
+              suicidalThoughts: suicidalThoughts,
+              familyHistory: familyHistory
             },
             academicInfo: {
-              academicPressure: academicInfo.academicPressure || "N/A",
-              studySatisfaction: academicInfo.studySatisfaction || "N/A",
-              studyHours: academicInfo.studyHours || "N/A",
-              gpa: academicInfo.gpa || "N/A"
+              academicPressure: inputData['Academic Pressure'] || "N/A",
+              studySatisfaction: inputData['Study Satisfaction'] || "N/A",
+              studyHours: inputData['Work/Study Hours'] || "N/A",
+              gpa: inputData['CGPA'] || "N/A"
             },
             socialInfo: {
-              jobSatisfaction: socialInfo.jobSatisfaction || "N/A",
-              financialStress: socialInfo.financialStress || "N/A",
-              workPressure: socialInfo.workPressure || "N/A"
+              jobSatisfaction: inputData['Job Satisfaction'] || "N/A",
+              financialStress: financialStress,
+              workPressure: inputData['Work Pressure'] || "N/A"
             },
             result: item.prediction === 1 // True if prediction is 1 (depressed)
           };
@@ -123,9 +144,16 @@ function HistoryPage() {
                   <th>Gender</th>
                   <th>Major</th>
                   <th>Sleep</th>
+                  <th>Dietary Habits</th>
+                  <th>Suicidal Thoughts</th>
+                  <th>Family History</th>
                   <th>GPA</th>
                   <th>Academic Pressure</th>
+                  <th>Study Satisfaction</th>
+                  <th>Study Hours</th>
+                  <th>Job Satisfaction</th>
                   <th>Financial Stress</th>
+                  <th>Work Pressure</th>
                   <th>Assessment Result</th>
                   <th>Actions</th>
                 </tr>
@@ -139,9 +167,16 @@ function HistoryPage() {
                     <td>{record.personalInfo.gender}</td>
                     <td>{record.personalInfo.major}</td>
                     <td>{record.healthInfo.sleepDuration} hrs</td>
+                    <td>{record.healthInfo.dietaryHabits}</td>
+                    <td>{record.healthInfo.suicidalThoughts}</td>
+                    <td>{record.healthInfo.familyHistory}</td>
                     <td>{record.academicInfo.gpa}</td>
                     <td>{record.academicInfo.academicPressure}/5</td>
+                    <td>{record.academicInfo.studySatisfaction}/5</td>
+                    <td>{record.academicInfo.studyHours} hrs</td>
+                    <td>{record.socialInfo.jobSatisfaction}/5</td>
                     <td>{record.socialInfo.financialStress}</td>
+                    <td>{record.socialInfo.workPressure}/5</td>
                     <td className={`result ${record.result ? "depressed" : "not-depressed"}`}>
                       {record.result ? 
                         <span>Depression Risk</span> : 

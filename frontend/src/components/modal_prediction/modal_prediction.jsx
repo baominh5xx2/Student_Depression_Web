@@ -18,8 +18,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import './modal_prediction.css';
 
 function ModalPrediction({ open, handleClose, formData, predictionResult }) {
-  // For now, let's simulate a prediction result
-  const isDepressed = predictionResult || Math.random() > 0.5; // Randomly true/false for demo
+  // Use only the real prediction result from the API
+  const isDepressed = predictionResult === true;
   
   return (
     <Dialog
@@ -60,11 +60,22 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   </TableRow>
                   <TableRow>
                     <TableCell>Gender</TableCell>
-                    <TableCell>{formData?.personalInfo?.gender || "-"}</TableCell>
+                    <TableCell>{formData?.personalInfo?.gender === "male" ? "Male" : 
+                                formData?.personalInfo?.gender === "female" ? "Female" : "-"}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Major</TableCell>
-                    <TableCell>{formData?.personalInfo?.major || "-"}</TableCell>
+                    <TableCell>{(() => {
+                      const major = formData?.personalInfo?.major;
+                      switch(major) {
+                        case "bachelor_education": return "Bachelor of Education";
+                        case "bachelor_commerce": return "Bachelor of Commerce";
+                        case "bachelor_architecture": return "Bachelor of Architecture";
+                        case "bachelor_computer": return "Bachelor of Computer Applications";
+                        case "class_12": return "Class 12";
+                        default: return major || "-";
+                      }
+                    })()}</TableCell>
                   </TableRow>
 
                   {/* Health Information */}
@@ -79,15 +90,24 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   </TableRow>
                   <TableRow>
                     <TableCell>Dietary Habits</TableCell>
-                    <TableCell>{formData?.healthInfo?.dietaryHabits || "-"}</TableCell>
+                    <TableCell>{(() => {
+                      const habits = formData?.healthInfo?.dietaryHabits;
+                      return habits ? habits.charAt(0).toUpperCase() + habits.slice(1) : "-";
+                    })()}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Suicidal Thoughts</TableCell>
-                    <TableCell>{formData?.healthInfo?.suicidalThoughts || "-"}</TableCell>
+                    <TableCell>{(() => {
+                      const thoughts = formData?.healthInfo?.suicidalThoughts;
+                      return thoughts ? thoughts.charAt(0).toUpperCase() + thoughts.slice(1) : "-";
+                    })()}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Family History of Mental Illness</TableCell>
-                    <TableCell>{formData?.healthInfo?.familyHistory || "-"}</TableCell>
+                    <TableCell>{(() => {
+                      const history = formData?.healthInfo?.familyHistory;
+                      return history ? history.charAt(0).toUpperCase() + history.slice(1) : "-";
+                    })()}</TableCell>
                   </TableRow>
 
                   {/* Academic Information */}
@@ -98,11 +118,11 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   </TableRow>
                   <TableRow>
                     <TableCell>Academic Pressure</TableCell>
-                    <TableCell>{formData?.academicInfo?.academicPressure || "-"}</TableCell>
+                    <TableCell>{formData?.academicInfo?.academicPressure || "-"}/5</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Study Satisfaction</TableCell>
-                    <TableCell>{formData?.academicInfo?.studySatisfaction || "-"}</TableCell>
+                    <TableCell>{formData?.academicInfo?.studySatisfaction || "-"}/5</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Study/Work Hours</TableCell>
@@ -110,7 +130,7 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   </TableRow>
                   <TableRow>
                     <TableCell>GPA</TableCell>
-                    <TableCell>{formData?.academicInfo?.gpa || "-"}</TableCell>
+                    <TableCell>{formData?.academicInfo?.gpa || "-"}/10</TableCell>
                   </TableRow>
 
                   {/* Social Information */}
@@ -121,15 +141,18 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   </TableRow>
                   <TableRow>
                     <TableCell>Job Satisfaction</TableCell>
-                    <TableCell>{formData?.socialInfo?.jobSatisfaction || "-"}</TableCell>
+                    <TableCell>{formData?.socialInfo?.jobSatisfaction || "-"}/4</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Financial Stress</TableCell>
-                    <TableCell>{formData?.socialInfo?.financialStress || "-"}</TableCell>
+                    <TableCell>{(() => {
+                      const stress = formData?.socialInfo?.financialStress;
+                      return stress ? stress.charAt(0).toUpperCase() + stress.slice(1) : "-";
+                    })()}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Work Pressure</TableCell>
-                    <TableCell>{formData?.socialInfo?.workPressure || "-"}</TableCell>
+                    <TableCell>{formData?.socialInfo?.workPressure || "-"}/5</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
