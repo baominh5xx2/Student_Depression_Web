@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './historypage.css';
 import Sidebar from '../../components/siderbar/siderbar';
+import { HistoryService } from '../../services/history';
 
 function HistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -8,101 +9,62 @@ function HistoryPage() {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch history data (mock data for now)
+  // Fetch history data from API
   useEffect(() => {
-    // This would be replaced with an actual API call
-    const mockData = [
-      {
-        id: 1,
-        date: "2023-06-15",
-        personalInfo: {
-          fullName: "John Doe",
-          age: "22",
-          gender: "male",
-          major: "Bachelor of Computer Applications"
-        },
-        healthInfo: {
-          sleepDuration: "7",
-          dietaryHabits: "yes",
-          suicidalThoughts: "no",
-          familyHistory: "no"
-        },
-        academicInfo: {
-          academicPressure: "3",
-          studySatisfaction: "4",
-          studyHours: "6",
-          gpa: "8.5"
-        },
-        socialInfo: {
-          jobSatisfaction: "3",
-          financialStress: "no",
-          workPressure: "2"
-        },
-        result: false // Not depressed
-      },
-      {
-        id: 2,
-        date: "2023-06-20",
-        personalInfo: {
-          fullName: "Jane Smith",
-          age: "20",
-          gender: "female",
-          major: "Bachelor of Architecture"
-        },
-        healthInfo: {
-          sleepDuration: "5",
-          dietaryHabits: "no",
-          suicidalThoughts: "yes",
-          familyHistory: "yes"
-        },
-        academicInfo: {
-          academicPressure: "5",
-          studySatisfaction: "2",
-          studyHours: "10",
-          gpa: "7.2"
-        },
-        socialInfo: {
-          jobSatisfaction: "1",
-          financialStress: "yes",
-          workPressure: "4"
-        },
-        result: true // Depressed
-      },
-      {
-        id: 3,
-        date: "2023-07-05",
-        personalInfo: {
-          fullName: "Alex Johnson",
-          age: "25",
-          gender: "male",
-          major: "Bachelor of Commerce"
-        },
-        healthInfo: {
-          sleepDuration: "8",
-          dietaryHabits: "yes",
-          suicidalThoughts: "no",
-          familyHistory: "yes"
-        },
-        academicInfo: {
-          academicPressure: "2",
-          studySatisfaction: "4",
-          studyHours: "5",
-          gpa: "8.0"
-        },
-        socialInfo: {
-          jobSatisfaction: "3",
-          financialStress: "no",
-          workPressure: "2"
-        },
-        result: false // Not depressed
+    const fetchHistoryData = async () => {
+      try {
+        const data = await HistoryService.getHistory(20); // Get up to 20 records
+        
+        // Process data to match our expected format
+        const processedData = data.map(item => {
+          // Extract info from input_data or use defaults
+          const personalInfo = item.input_data?.personalInfo || {};
+          const healthInfo = item.input_data?.healthInfo || {};
+          const academicInfo = item.input_data?.academicInfo || {};
+          const socialInfo = item.input_data?.socialInfo || {};
+          
+          return {
+            id: item._id,
+            date: new Date(item.timestamp).toLocaleDateString(),
+            personalInfo: {
+              fullName: item.user_name || personalInfo.fullName || "Unknown",
+              age: personalInfo.age || "N/A",
+              gender: personalInfo.gender || "N/A",
+              major: personalInfo.major || "N/A"
+            },
+            healthInfo: {
+              sleepDuration: healthInfo.sleepDuration || "N/A",
+              dietaryHabits: healthInfo.dietaryHabits || "N/A",
+              suicidalThoughts: healthInfo.suicidalThoughts || "N/A",
+              familyHistory: healthInfo.familyHistory || "N/A"
+            },
+            academicInfo: {
+              academicPressure: academicInfo.academicPressure || "N/A",
+              studySatisfaction: academicInfo.studySatisfaction || "N/A",
+              studyHours: academicInfo.studyHours || "N/A",
+              gpa: academicInfo.gpa || "N/A"
+            },
+            socialInfo: {
+              jobSatisfaction: socialInfo.jobSatisfaction || "N/A",
+              financialStress: socialInfo.financialStress || "N/A",
+              workPressure: socialInfo.workPressure || "N/A"
+            },
+            result: item.prediction === 1 // True if prediction is 1 (depressed)
+          };
+        });
+        
+        setHistoryData(processedData);
+        setFilteredData(processedData);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+        setHistoryData([]);
+        setFilteredData([]);
+      } finally {
+        setLoading(false);
       }
-    ];
-
-    setTimeout(() => {
-      setHistoryData(mockData);
-      setFilteredData(mockData);
-      setLoading(false);
-    }, 800); // Simulate loading time
+    };
+    
+    fetchHistoryData();
   }, []);
 
   // Handle search

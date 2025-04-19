@@ -4,6 +4,7 @@ import Sidebar from '../../components/siderbar/siderbar';
 import ModalPrediction from '../../components/modal_prediction/modal_prediction';
 import { Button } from '@mui/material';
 import { predictDepression } from "../../services/prediction";
+import { HistoryService } from "../../services/history"; // Thêm dòng này
 
 function ModelPredictPage() {
   const [personalInfo, setPersonalInfo] = useState({
@@ -107,49 +108,73 @@ function ModelPredictPage() {
 
   // Handle form submission and show modal
   const handleSubmit = async () => {
-    // Chuẩn hóa dữ liệu gửi lên backend
-    const payload = {
-      Age: Number(personalInfo.age),
-      Academic_Pressure: Number(academicInfo.academicPressure),
-      Work_Pressure: Number(socialInfo.workPressure),
-      CGPA: Number(academicInfo.gpa),
-      Study_Satisfaction: Number(academicInfo.studySatisfaction),
-      Job_Satisfaction: Number(socialInfo.jobSatisfaction),
-      Sleep_Duration: Number(healthInfo.sleepDuration),
-      Suicidal_Thoughts: Number(healthInfo.suicidalThoughts === "yes"),
-      Work_Study_Hours: Number(academicInfo.studyHours),
-      Financial_Stress: Number(socialInfo.financialStress === "yes"),
-      Family_History_of_Mental_Illness: Number(healthInfo.familyHistory === "yes"),
-      Gender_Male: Number(personalInfo.gender === "male"),
-      Gender_Female: Number(personalInfo.gender === "female"),
-      Profession_Student: 1,
-      [(() => {
-        switch (healthInfo.dietaryHabits) {
-          case "moderate": return 'Dietary_Habits_Moderate';
-          case "unhealthy": return 'Dietary_Habits_Unhealthy';
-          default: return 'Dietary_Habits_Others';
-        }
-      })()]: 1,
-      [(() => {
+    // Format payload with correct key names
+    const mappedInput = {
+      'Age': Number(personalInfo.age),
+      'Academic Pressure': Number(academicInfo.academicPressure),
+      'Work Pressure': Number(socialInfo.workPressure),
+      'CGPA': Number(academicInfo.gpa),
+      'Study Satisfaction': Number(academicInfo.studySatisfaction),
+      'Job Satisfaction': Number(socialInfo.jobSatisfaction),
+      'Sleep Duration': Number(healthInfo.sleepDuration),
+      'Suicidal_Thoughts': Number(healthInfo.suicidalThoughts === "yes"),
+      'Work/Study Hours': Number(academicInfo.studyHours),
+      'Financial Stress': Number(socialInfo.financialStress === "yes"),
+      'Family History of Mental Illness': Number(healthInfo.familyHistory === "yes"),
+      'Gender_Male': Number(personalInfo.gender === "male"),
+      'Gender_Female': Number(personalInfo.gender === "female"),
+      'Profession_Student': 1,
+      [`Dietary Habits_${healthInfo.dietaryHabits === "moderate" ? "Moderate" : 
+        healthInfo.dietaryHabits === "unhealthy" ? "Unhealthy" : "Others"}`]: 1,
+      [`Degree_${(() => {
         switch (personalInfo.major) {
-          case "bachelor_education": return 'Degree_B.Ed';
-          case "bachelor_commerce": return 'Degree_B.Com';
-          case "bachelor_architecture": return 'Degree_B.Arch';
-          case "bachelor_computer": return 'Degree_BCA';
-          case "class_12": return 'Degree_Class12';
-          default: return 'Degree_BCA';
+          case "bachelor_education": return "B.Ed";
+          case "bachelor_commerce": return "B.Com";
+          case "bachelor_architecture": return "B.Arch";
+          case "bachelor_computer": return "BCA";
+          case "class_12": return "Class12";
+          default: return "BCA";
         }
-      })()]: 1
+      })()}`]: 1
     };
 
-    // In ra console để debug
-    console.log("Payload gửi lên backend:", payload);
+    console.log("Mapped input:", mappedInput);
 
     try {
-      const result = await predictDepression(payload);
-      setPredictionResult(result.prediction === 1); // true nếu có nguy cơ trầm cảm
+      const result = await predictDepression(mappedInput);
+      console.log("Prediction result:", result);
+      console.log("Raw probability from API:", result.probability); // In ra để debug
+
+      // Set prediction result for UI
+      setPredictionResult(result.prediction === 1);
+      
+      // Lấy đúng dữ liệu từ kết quả API
+      const prediction = result.prediction;
+      // Kiểm tra cấu trúc dữ liệu để lấy đúng mảng probability
+      let probabilities;
+      if (Array.isArray(result.probability)) {
+        probabilities = result.probability;
+      } else if (typeof result.probability === 'object' && result.probability !== null) {
+        // Nếu là object, thử chuyển thành array
+        probabilities = Object.values(result.probability);
+      } else {
+        // Fallback
+        probabilities = [0, 0];
+      }
+      
+      console.log(`Sending to history API - Prediction: ${prediction}, Probabilities:`, probabilities);
+      
+      // Save to history with correct format
+      await HistoryService.savePrediction(
+        mappedInput,
+        prediction,
+        probabilities,
+        personalInfo.fullName
+      );
+      
       setOpenModal(true);
     } catch (error) {
+      console.error("Error in prediction or saving history:", error);
       alert("Prediction failed: " + error.message);
     }
   };
