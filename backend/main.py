@@ -5,6 +5,7 @@ from app.routes.history import router as history_router
 from app.database.mongodb import MongoDB
 from app.database.history_db import HistoryDB
 import logging
+from app.svm_lib.routes import router as svm_router
 
 # Cấu hình logging
 logging.basicConfig(
@@ -42,6 +43,7 @@ app.add_middleware(
 # Include routers
 app.include_router(prediction_router)
 app.include_router(history_router)
+app.include_router(svm_router)
 
 @app.get("/")
 async def root():
