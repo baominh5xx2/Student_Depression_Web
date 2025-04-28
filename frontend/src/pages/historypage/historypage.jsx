@@ -23,7 +23,7 @@ function HistoryPage() {
           // Decode gender from one-hot encoding
           let gender = "N/A";
           if (inputData['Gender_Male'] === 1) gender = "Male";
-          else if (inputData['Gender_Female'] === 1) gender = "Female";
+          else gender = "Female";
           
           // Decode dietary habits
           let dietaryHabits = "N/A";
@@ -49,26 +49,26 @@ function HistoryPage() {
             date: new Date(item.timestamp).toLocaleDateString(),
             personalInfo: {
               fullName: item.user_name || "Unknown",
-              age: inputData['Age'] || "N/A",
+              age: inputData['Age'] !== undefined ? inputData['Age'] : "N/A",
               gender: gender,
               major: major
             },
             healthInfo: {
-              sleepDuration: inputData['Sleep_Duration'] || "N/A",
+              sleepDuration: inputData['Sleep_Duration'] !== undefined ? inputData['Sleep_Duration'] : "N/A",
               dietaryHabits: dietaryHabits,
               suicidalThoughts: suicidalThoughts,
               familyHistory: familyHistory
             },
             academicInfo: {
-              academicPressure: inputData['Academic_Pressure'] || "N/A",
-              studySatisfaction: inputData['Study_Satisfaction'] || "N/A",
-              studyHours: inputData['Work_Study_Hours'] || "N/A",
-              gpa: inputData['CGPA'] || "N/A"
+              academicPressure: inputData['Academic_Pressure'] !== undefined ? inputData['Academic_Pressure'] : "N/A",
+              studySatisfaction: inputData['Study_Satisfaction'] !== undefined ? inputData['Study_Satisfaction'] : "N/A",
+              studyHours: inputData['Work_Study_Hours'] !== undefined ? inputData['Work_Study_Hours'] : "N/A",
+              gpa: inputData['CGPA'] !== undefined ? inputData['CGPA'] : "N/A"
             },
             socialInfo: {
-              jobSatisfaction: inputData['Job_Satisfaction'] || "N/A",
+              jobSatisfaction: inputData['Job_Satisfaction'] !== undefined ? inputData['Job_Satisfaction'] : "N/A",
               financialStress: financialStress,
-              workPressure: inputData['Work_Pressure'] || "N/A"
+              workPressure: inputData['Work_Pressure'] !== undefined ? inputData['Work_Pressure'] : "N/A"
             },
             result: item.prediction === 1 // True if prediction is 1 (depressed)
           };
@@ -138,7 +138,6 @@ function HistoryPage() {
             <table className="history-table">
               <thead>
                 <tr>
-                  <th>Date</th>
                   <th>Name</th>
                   <th>Age</th>
                   <th>Gender</th>
@@ -155,13 +154,11 @@ function HistoryPage() {
                   <th>Financial Stress</th>
                   <th>Work Pressure</th>
                   <th>Assessment Result</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredData.map(record => (
                   <tr key={record.id} className={record.result ? "depressed" : ""}>
-                    <td>{record.date}</td>
                     <td>{record.personalInfo.fullName}</td>
                     <td>{record.personalInfo.age}</td>
                     <td>{record.personalInfo.gender}</td>
@@ -182,14 +179,6 @@ function HistoryPage() {
                         <span>Depression Risk</span> : 
                         <span>No Depression Risk</span>
                       }
-                    </td>
-                    <td>
-                      <button 
-                        className="view-details-btn"
-                        onClick={() => viewDetails(record.id)}
-                      >
-                        View Details
-                      </button>
                     </td>
                   </tr>
                 ))}

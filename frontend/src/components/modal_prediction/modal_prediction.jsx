@@ -11,7 +11,9 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Paper
+  Paper,
+  Box,
+  Divider
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -29,27 +31,51 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
       fullWidth
       className="prediction-modal"
     >
-      <DialogTitle>
+      <DialogTitle className="modal-title">
         <Typography variant="h5" component="div" fontWeight="bold">
           Depression Risk Assessment Results
         </Typography>
       </DialogTitle>
       <DialogContent dividers>
-        <div className="modal-content-container">
-          {/* Left column: User data table */}
-          <div className="user-data-column">
-            <Typography variant="h6" gutterBottom>
-              Your Information
+        {/* Results section at the top */}
+        <Box className="result-banner" sx={{ mb: 4 }}>
+          <div className={`result-container ${isDepressed ? 'depression-positive' : 'depression-negative'}`}>
+            <div className="result-icon">
+              {isDepressed ? (
+                <CancelIcon className="icon-error" />
+              ) : (
+                <CheckCircleIcon className="icon-success" />
+              )}
+            </div>
+
+            <h2 className={`result-heading ${isDepressed ? 'error-text' : 'success-text'}`}>
+              {isDepressed ? 'Depression Risk Detected' : 'No Depression Risk Detected'}
+            </h2>
+            
+            <p className="result-description">
+              {isDepressed 
+                ? 'Based on the information provided, our system has detected signs of depression. We strongly recommend consulting with a mental health professional for a proper diagnosis and support.'
+                : 'Based on the information provided, our system has not detected signs of depression. However, if you\'re feeling unwell, consider speaking with a healthcare professional.'}
+            </p>
+          </div>
+        </Box>
+
+        <Divider sx={{ mb: 3 }} />
+        
+        {/* Assessment data section */}
+        <Typography variant="h6" gutterBottom className="section-title">
+          Your Information
+        </Typography>
+        
+        <div className="info-sections-container">
+          {/* Personal Information */}
+          <div className="info-section">
+            <Typography variant="subtitle1" className="info-section-title">
+              Personal Information
             </Typography>
             <TableContainer component={Paper} elevation={2}>
               <Table>
                 <TableBody>
-                  {/* Personal Information */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="section-header">
-                      Personal Information
-                    </TableCell>
-                  </TableRow>
                   <TableRow>
                     <TableCell>Full Name</TableCell>
                     <TableCell>{formData?.personalInfo?.fullName || "-"}</TableCell>
@@ -77,13 +103,19 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                       }
                     })()}</TableCell>
                   </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
 
-                  {/* Health Information */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="section-header">
-                      Health Information
-                    </TableCell>
-                  </TableRow>
+          {/* Health Information */}
+          <div className="info-section">
+            <Typography variant="subtitle1" className="info-section-title">
+              Health Information
+            </Typography>
+            <TableContainer component={Paper} elevation={2}>
+              <Table>
+                <TableBody>
                   <TableRow>
                     <TableCell>Sleep Duration</TableCell>
                     <TableCell>{formData?.healthInfo?.sleepDuration || "-"} hours</TableCell>
@@ -109,13 +141,19 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                       return history ? history.charAt(0).toUpperCase() + history.slice(1) : "-";
                     })()}</TableCell>
                   </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
 
-                  {/* Academic Information */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="section-header">
-                      Academic Information
-                    </TableCell>
-                  </TableRow>
+          {/* Academic Information */}
+          <div className="info-section">
+            <Typography variant="subtitle1" className="info-section-title">
+              Academic Information
+            </Typography>
+            <TableContainer component={Paper} elevation={2}>
+              <Table>
+                <TableBody>
                   <TableRow>
                     <TableCell>Academic Pressure</TableCell>
                     <TableCell>{formData?.academicInfo?.academicPressure || "-"}/5</TableCell>
@@ -132,13 +170,19 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                     <TableCell>GPA</TableCell>
                     <TableCell>{formData?.academicInfo?.gpa || "-"}/10</TableCell>
                   </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
 
-                  {/* Social Information */}
-                  <TableRow>
-                    <TableCell colSpan={2} className="section-header">
-                      Social Information
-                    </TableCell>
-                  </TableRow>
+          {/* Social Information */}
+          <div className="info-section">
+            <Typography variant="subtitle1" className="info-section-title">
+              Social Information
+            </Typography>
+            <TableContainer component={Paper} elevation={2}>
+              <Table>
+                <TableBody>
                   <TableRow>
                     <TableCell>Job Satisfaction</TableCell>
                     <TableCell>{formData?.socialInfo?.jobSatisfaction || "-"}/4</TableCell>
@@ -158,40 +202,19 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
               </Table>
             </TableContainer>
           </div>
-
-          {/* Right column: Prediction result */}
-          <div className="assessment-result-column">
-            <div className={`result-container ${isDepressed ? 'depression-positive' : 'depression-negative'}`}>
-              <h3 className="result-title">Assessment Result</h3>
-              
-              <div className="result-icon">
-                {isDepressed ? (
-                  <CancelIcon className="icon-error" />
-                ) : (
-                  <CheckCircleIcon className="icon-success" />
-                )}
-              </div>
-
-              <h2 className={`result-heading ${isDepressed ? 'error-text' : 'success-text'}`}>
-                {isDepressed ? 'Depression Risk Detected' : 'No Depression Risk Detected'}
-              </h2>
-              
-              <p className="result-description">
-                {isDepressed 
-                  ? 'Based on the information provided, our system has detected signs of depression. We strongly recommend consulting with a mental health professional for a proper diagnosis and support.'
-                  : 'Based on the information provided, our system has not detected signs of depression. However, if you\'re feeling unwell, consider speaking with a healthcare professional.'}
-              </p>
-              
-              <p className="result-disclaimer">
-                Disclaimer: This is not a medical diagnosis. Results are based on provided information and
-                should be discussed with a healthcare professional.
-              </p>
-            </div>
-          </div>
         </div>
+        
+        <Box mt={3} className="disclaimer-box">
+          <Typography variant="body2" className="result-disclaimer">
+            Disclaimer: This is not a medical diagnosis. Results are based on provided information and
+            should be discussed with a healthcare professional.
+          </Typography>
+        </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant="contained" className="close-button">Close</Button>
+        <Button onClick={handleClose} variant="contained" className="close-button">
+          CLOSE
+        </Button>
       </DialogActions>
     </Dialog>
   );
