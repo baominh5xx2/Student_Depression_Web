@@ -27,9 +27,9 @@ function HistoryPage() {
           
           // Decode dietary habits
           let dietaryHabits = "N/A";
-          if (inputData['Dietary Habits_Moderate'] === 1) dietaryHabits = "Moderate";
-          else if (inputData['Dietary Habits_Unhealthy'] === 1) dietaryHabits = "Unhealthy";
-          else if (inputData['Dietary Habits_Others'] === 1) dietaryHabits = "Others";
+          if (inputData['Dietary_Habits_Moderate'] === 1) dietaryHabits = "Moderate";
+          else if (inputData['Dietary_Habits_Unhealthy'] === 1) dietaryHabits = "Unhealthy";
+          else if (inputData['Dietary_Habits_Others'] === 1) dietaryHabits = "Others";
           
           // Decode degree/major
           let major = "N/A";
@@ -41,8 +41,8 @@ function HistoryPage() {
           
           // Decode yes/no fields
           const suicidalThoughts = inputData['Suicidal_Thoughts'] === 1 ? "Yes" : "No";
-          const financialStress = inputData['Financial Stress'] === 1 ? "Yes" : "No";
-          const familyHistory = inputData['Family History of Mental Illness'] === 1 ? "Yes" : "No";
+          const financialStress = inputData['Financial_Stress'] === 1 ? "Yes" : "No";
+          const familyHistory = inputData['Family_History_of_Mental_Illness'] === 1 ? "Yes" : "No";
           
           return {
             id: item._id,
@@ -54,21 +54,21 @@ function HistoryPage() {
               major: major
             },
             healthInfo: {
-              sleepDuration: inputData['Sleep Duration'] || "N/A",
+              sleepDuration: inputData['Sleep_Duration'] || "N/A",
               dietaryHabits: dietaryHabits,
               suicidalThoughts: suicidalThoughts,
               familyHistory: familyHistory
             },
             academicInfo: {
-              academicPressure: inputData['Academic Pressure'] || "N/A",
-              studySatisfaction: inputData['Study Satisfaction'] || "N/A",
-              studyHours: inputData['Work/Study Hours'] || "N/A",
+              academicPressure: inputData['Academic_Pressure'] || "N/A",
+              studySatisfaction: inputData['Study_Satisfaction'] || "N/A",
+              studyHours: inputData['Work_Study_Hours'] || "N/A",
               gpa: inputData['CGPA'] || "N/A"
             },
             socialInfo: {
-              jobSatisfaction: inputData['Job Satisfaction'] || "N/A",
+              jobSatisfaction: inputData['Job_Satisfaction'] || "N/A",
               financialStress: financialStress,
-              workPressure: inputData['Work Pressure'] || "N/A"
+              workPressure: inputData['Work_Pressure'] || "N/A"
             },
             result: item.prediction === 1 // True if prediction is 1 (depressed)
           };

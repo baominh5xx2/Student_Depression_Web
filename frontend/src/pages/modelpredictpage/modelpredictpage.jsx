@@ -111,20 +111,18 @@ function ModelPredictPage() {
     // Format payload with correct key names
     const mappedInput = {
       'Age': Number(personalInfo.age),
-      'Academic Pressure': Number(academicInfo.academicPressure),
-      'Work Pressure': Number(socialInfo.workPressure),
+      'Academic_Pressure': Number(academicInfo.academicPressure),
+      'Work_Pressure': Number(socialInfo.workPressure),
       'CGPA': Number(academicInfo.gpa),
-      'Study Satisfaction': Number(academicInfo.studySatisfaction),
-      'Job Satisfaction': Number(socialInfo.jobSatisfaction),
-      'Sleep Duration': Number(healthInfo.sleepDuration),
+      'Study_Satisfaction': Number(academicInfo.studySatisfaction),
+      'Job_Satisfaction': Number(socialInfo.jobSatisfaction),
+      'Sleep_Duration': Number(healthInfo.sleepDuration),
       'Suicidal_Thoughts': Number(healthInfo.suicidalThoughts === "yes"),
-      'Work/Study Hours': Number(academicInfo.studyHours),
-      'Financial Stress': Number(socialInfo.financialStress === "yes"),
-      'Family History of Mental Illness': Number(healthInfo.familyHistory === "yes"),
-      'Gender_Male': Number(personalInfo.gender === "male"),
-      'Gender_Female': Number(personalInfo.gender === "female"),
-      'Profession_Student': 1,
-      [`Dietary Habits_${healthInfo.dietaryHabits === "moderate" ? "Moderate" : 
+      'Work_Study_Hours': Number(academicInfo.studyHours),
+      'Financial_Stress': Number(socialInfo.financialStress === "yes"),
+      'Family_History_of_Mental_Illness': Number(healthInfo.familyHistory === "yes"),
+      'Gender_Male': Number(personalInfo.gender === "male"), // Chỉ giữ lại cột này
+      [`Dietary_Habits_${healthInfo.dietaryHabits === "moderate" ? "Moderate" : 
         healthInfo.dietaryHabits === "unhealthy" ? "Unhealthy" : "Others"}`]: 1,
       [`Degree_${(() => {
         switch (personalInfo.major) {
@@ -142,34 +140,46 @@ function ModelPredictPage() {
 
     try {
       const result = await predictDepression(mappedInput);
-      console.log("Prediction result:", result);
-      console.log("Raw probability from API:", result.probability); // In ra để debug
-
+      console.log("Complete prediction API response:", JSON.stringify(result));
+      
       // Set prediction result for UI
       setPredictionResult(result.prediction === 1);
       
-      // Lấy đúng dữ liệu từ kết quả API
+      // Better error handling for prediction data
+      if (result.prediction === undefined || result.prediction === null) {
+        console.error("Prediction value is missing in API response");
+        throw new Error("Invalid prediction data received");
+      }
+      
       const prediction = result.prediction;
-      // Kiểm tra cấu trúc dữ liệu để lấy đúng mảng probability
+      
+      // Better probability handling
       let probabilities;
+      console.log("Raw probability type:", typeof result.probability);
+      
       if (Array.isArray(result.probability)) {
         probabilities = result.probability;
       } else if (typeof result.probability === 'object' && result.probability !== null) {
-        // Nếu là object, thử chuyển thành array
         probabilities = Object.values(result.probability);
+      } else if (typeof result.probability === 'number') {
+        // Handle case where API returns a single probability value
+        probabilities = [1 - result.probability, result.probability];
       } else {
-        // Fallback
-        probabilities = [0, 0];
+        console.error("Invalid probability format:", result.probability);
+        probabilities = [0, 0]; // Fallback
       }
       
-      console.log(`Sending to history API - Prediction: ${prediction}, Probabilities:`, probabilities);
+      console.log("Formatted data for history API:");
+      console.log("- Prediction:", prediction, "Type:", typeof prediction);
+      console.log("- Probabilities:", probabilities, "Type:", Array.isArray(probabilities));
+      console.log("- Username:", personalInfo.fullName);
       
       // Save to history with correct format
       await HistoryService.savePrediction(
         mappedInput,
         prediction,
         probabilities,
-        personalInfo.fullName
+        personalInfo.fullName || "Anonymous"
       );
       
       setOpenModal(true);
