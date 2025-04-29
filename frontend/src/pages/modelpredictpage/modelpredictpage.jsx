@@ -127,16 +127,41 @@ function ModelPredictPage() {
       'Work_Study_Hours': Number(academicInfo.studyHours),
       'Financial_Stress': Number(socialInfo.financialStress === "yes"),
       'Family_History_of_Mental_Illness': Number(healthInfo.familyHistory === "yes"),
+      'Gender_Male': Number(personalInfo.gender === "male"),
       [`Dietary_Habits_${healthInfo.dietaryHabits === "moderate" ? "Moderate" : 
-        healthInfo.dietaryHabits === "unhealthy" ? "Unhealthy" : "Others"}`]: 1,
+        healthInfo.dietaryHabits === "unhealthy" ? "Unhealthy" : 
+        healthInfo.dietaryHabits === "healthy" ? "Healthy" : "Others"}`]: 1,
       [`Degree_${(() => {
         switch (personalInfo.major) {
-          case "bachelor_education": return "B.Ed";
-          case "bachelor_commerce": return "B.Com";
-          case "bachelor_architecture": return "B.Arch";
-          case "bachelor_computer": return "BCA";
-          case "class_12": return "Class12";
-          default: return "BCA";
+          case "bpharm": return "B.Pharm";
+          case "bsc": return "BSc";
+          case "ba": return "BA";
+          case "bca": return "BCA";
+          case "mtech": return "M.Tech";
+          case "phd": return "PhD";
+          case "class_12": return "Class 12";
+          case "bed": return "B.Ed";
+          case "llb": return "LLB";
+          case "be": return "BE";
+          case "med": return "M.Ed";
+          case "msc": return "MSc";
+          case "bhm": return "BHM";
+          case "mpharm": return "M.Pharm";
+          case "mca": return "MCA";
+          case "ma": return "MA";
+          case "bcom": return "B.Com";
+          case "md": return "MD";
+          case "mba": return "MBA";
+          case "mbbs": return "MBBS";
+          case "mcom": return "M.Com";
+          case "barch": return "B.Arch";
+          case "llm": return "LLM";
+          case "btech": return "B.Tech";
+          case "bba": return "BBA";
+          case "me": return "ME";
+          case "mhm": return "MHM";
+          case "others": return "Others";
+          default: return "Others";
         }
       })()}`]: 1,
       'Model': selectedModel  // Add the selected model to the input
@@ -259,11 +284,34 @@ function ModelPredictPage() {
                 onChange={handlePersonalInfoChange}
               >
                 <option value=""></option>
-                <option value="bachelor_education">Bachelor of Education</option>
-                <option value="bachelor_commerce">Bachelor of Commerce</option>
-                <option value="bachelor_architecture">Bachelor of Architecture</option>
-                <option value="bachelor_computer">Bachelor of Computer Applications</option>
-                <option value="class_12">Class 12</option>
+                <option value="bpharm">B.Pharm - Bachelor of Pharmacy</option>
+                <option value="bsc">BSc - Bachelor of Science</option>
+                <option value="ba">BA - Bachelor of Arts</option>
+                <option value="bca">BCA - Bachelor of Computer Applications</option>
+                <option value="mtech">M.Tech - Master of Technology</option>
+                <option value="phd">PhD - Doctor of Philosophy</option>
+                <option value="class_12">Class 12 - 12th Grade</option>
+                <option value="bed">B.Ed - Bachelor of Education</option>
+                <option value="llb">LLB - Bachelor of Laws</option>
+                <option value="be">BE - Bachelor of Engineering</option>
+                <option value="med">M.Ed - Master of Education</option>
+                <option value="msc">MSc - Master of Science</option>
+                <option value="bhm">BHM - Bachelor of Hotel Management</option>
+                <option value="mpharm">M.Pharm - Master of Pharmacy</option>
+                <option value="mca">MCA - Master of Computer Applications</option>
+                <option value="ma">MA - Master of Arts</option>
+                <option value="bcom">B.Com - Bachelor of Commerce</option>
+                <option value="md">MD - Doctor of Medicine</option>
+                <option value="mba">MBA - Master of Business Administration</option>
+                <option value="mbbs">MBBS - Bachelor of Medicine and Bachelor of Surgery</option>
+                <option value="mcom">M.Com - Master of Commerce</option>
+                <option value="barch">B.Arch - Bachelor of Architecture</option>
+                <option value="llm">LLM - Master of Laws</option>
+                <option value="btech">B.Tech - Bachelor of Technology</option>
+                <option value="bba">BBA - Bachelor of Business Administration</option>
+                <option value="me">ME - Master of Engineering</option>
+                <option value="mhm">MHM - Master of Hotel Management</option>
+                <option value="others">Others</option>
               </select>
             </div>
           </div>
@@ -296,6 +344,7 @@ function ModelPredictPage() {
                 <option value=""></option>
                 <option value="moderate">Moderate</option>
                 <option value="unhealthy">Unhealthy</option>
+                <option value="healthy">Healthy</option>
                 <option value="others">Others</option>
               </select>
             </div>

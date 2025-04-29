@@ -30,12 +30,13 @@
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 2;
+  overflow: visible;
 }
 
 .section-container h3 {
@@ -55,6 +56,7 @@
   gap: 12px;
   max-width: 450px;
   margin: 0 auto;
+  margin-bottom: 25px;
 }
 
 .form-group {
@@ -62,6 +64,7 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
+  --dropdown-position: below;
 }
 
 .form-group label {
@@ -89,6 +92,51 @@
   outline: none;
   border-color: #6a11cb;
   box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+}
+
+.form-group select {
+  width: 70%;
+  padding: 8px 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  -webkit-appearance: menulist-button;
+  appearance: menulist-button;
+  /* Force dropdown to appear below */
+  -ms-select-menu-vertical-direction: down;
+  select-menu-vertical-direction: down;
+  transform: translateY(0);
+}
+
+/* Override browser default dropdown behavior */
+.form-group select option {
+  position: absolute;
+  max-height: 300px;
+  top: 100%;
+  left: 0;
+}
+
+/* Custom dropdown styling for better control */
+.custom-select-wrapper {
+  position: relative;
+  width: 70%;
+}
+
+.custom-select-wrapper select {
+  width: 100%;
+}
+
+/* Add browser compatibility for dropdown position */
+@supports (-moz-appearance:none) {
+  /* Firefox specific styles */
+  .form-group select {
+    -moz-appearance: none;
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23333' d='M0 0l4 4 4-4H0z'/%3E%3C/svg%3E");
+    padding-right: 25px;
+  }
 }
 
 .submit-container {

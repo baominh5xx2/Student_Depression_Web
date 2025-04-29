@@ -119,7 +119,8 @@ def predict(features: Dict[str, Any]):
             'Suicidal_Thoughts': 'Have you ever had suicidal thoughts ?_Yes',
             'Work_Study_Hours': 'Work/Study Hours',
             'Financial_Stress': 'Financial Stress',
-            'Family_History_of_Mental_Illness': 'Family History of Mental Illness_Yes'
+            'Family_History_of_Mental_Illness': 'Family History of Mental Illness_Yes',
+            'Gender_Male': 'Gender_Male'  # Add explicit mapping for Gender_Male
         }
         
         # Apply mapping and add to mapped_input
