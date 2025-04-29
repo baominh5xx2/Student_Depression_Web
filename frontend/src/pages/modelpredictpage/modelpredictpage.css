@@ -99,3 +99,11 @@
   position: relative;
   z-index: 2;
 }
+
+.model-note {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #666;
+  margin-top: 5px;
+  margin-left: 10px;
+}

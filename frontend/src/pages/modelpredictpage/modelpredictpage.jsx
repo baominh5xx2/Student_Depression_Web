@@ -34,6 +34,8 @@ function ModelPredictPage() {
     workPressure: ''
   });
 
+  const [selectedModel, setSelectedModel] = useState('SVM_LIB');
+
   // Modal state
   const [openModal, setOpenModal] = useState(false);
   const [predictionResult, setPredictionResult] = useState(null);
@@ -96,6 +98,10 @@ function ModelPredictPage() {
     }));
   };
 
+  const handleModelChange = (e) => {
+    setSelectedModel(e.target.value);
+  };
+
   // Generate options for ratings 0-5
   const ratingOptions = Array.from({ length: 6 }, (_, i) => (
     <option key={i} value={i}>{i}</option>
@@ -121,7 +127,6 @@ function ModelPredictPage() {
       'Work_Study_Hours': Number(academicInfo.studyHours),
       'Financial_Stress': Number(socialInfo.financialStress === "yes"),
       'Family_History_of_Mental_Illness': Number(healthInfo.familyHistory === "yes"),
-      'Gender_Male': Number(personalInfo.gender === "male"), // Chỉ giữ lại cột này
       [`Dietary_Habits_${healthInfo.dietaryHabits === "moderate" ? "Moderate" : 
         healthInfo.dietaryHabits === "unhealthy" ? "Unhealthy" : "Others"}`]: 1,
       [`Degree_${(() => {
@@ -133,7 +138,8 @@ function ModelPredictPage() {
           case "class_12": return "Class12";
           default: return "BCA";
         }
-      })()}`]: 1
+      })()}`]: 1,
+      'Model': selectedModel  // Add the selected model to the input
     };
 
     console.log("Mapped input:", mappedInput);
@@ -173,6 +179,7 @@ function ModelPredictPage() {
       console.log("- Prediction:", prediction, "Type:", typeof prediction);
       console.log("- Probabilities:", probabilities, "Type:", Array.isArray(probabilities));
       console.log("- Username:", personalInfo.fullName);
+      console.log("- Model:", selectedModel);
       
       // Save to history with correct format
       await HistoryService.savePrediction(
@@ -199,7 +206,8 @@ function ModelPredictPage() {
     personalInfo,
     healthInfo,
     academicInfo,
-    socialInfo
+    socialInfo,
+    selectedModel
   };
 
   return (
@@ -417,6 +425,27 @@ function ModelPredictPage() {
               </select>
             </div>
           </div>
+        </div>
+
+        <div className="section-container">
+          <h3>AI Model Prediction</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="aiModel">Select Model:</label>
+              <select
+                id="aiModel"
+                name="aiModel"
+                value={selectedModel}
+                onChange={handleModelChange}
+              >
+                <option value="Logictis_LIB">Logictis_LIB</option>
+                <option value="Logictis_Scratch">Logictis_Scratch</option>
+                <option value="SVM_LIB">SVM_LIB</option>
+                <option value="SVM_Scratch">SVM_Scratch</option>
+              </select>
+            </div>
+          </div>
+          <p className="model-note">We recommend using SVM_LIB model</p>
         </div>
 
         {/* Submit Button */}
