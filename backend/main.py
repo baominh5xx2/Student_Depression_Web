@@ -7,6 +7,7 @@ import logging
 from app.svm_lib.routes import router as svm_router
 from app.svm_scratch.routes import router as svm_scratch_router
 from app.logictis_scratch.routes import router as logistic_scratch_router
+from app.logictis_lib.routes import router as logistic_lib_router
 
 # Cấu hình logging
 logging.basicConfig(
@@ -46,6 +47,7 @@ app.include_router(history_router)
 app.include_router(svm_router)
 app.include_router(svm_scratch_router)
 app.include_router(logistic_scratch_router)
+app.include_router(logistic_lib_router)
 
 @app.get("/")
 async def root():

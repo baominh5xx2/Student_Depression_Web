@@ -35,6 +35,9 @@ function ModelPredictPage() {
   });
 
   const [selectedModel, setSelectedModel] = useState('SVM_LIB');
+  
+  // Add warning message state
+  const [timeWarning, setTimeWarning] = useState('');
 
   // Modal state
   const [openModal, setOpenModal] = useState(false);
@@ -42,22 +45,55 @@ function ModelPredictPage() {
 
   const handlePersonalInfoChange = (e) => {
     const { name, value } = e.target;
-    setPersonalInfo(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    if (name === 'age') {
+      // Validate age (0-100 years)
+      if (value === '' || (parseInt(value) >= 0 && parseInt(value) <= 100)) {
+        setPersonalInfo(prevState => ({
+          ...prevState,
+          [name]: value
+        }));
+      }
+    } else {
+      setPersonalInfo(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+    }
   };
 
   const handleHealthInfoChange = (e) => {
     const { name, value } = e.target;
     if (name === 'sleepDuration') {
-      // Validate sleep duration (0-24 hours)
-      if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 24)) {
+      // If empty, just update the value
+      if (value === '') {
         setHealthInfo(prevState => ({
           ...prevState,
           [name]: value
         }));
+        setTimeWarning('');
+        return;
       }
+      
+      const newSleepDuration = parseFloat(value);
+      const studyHours = parseFloat(academicInfo.studyHours) || 0;
+      
+      // Check if new sleep duration is valid
+      if (newSleepDuration < 0 || newSleepDuration > 24) {
+        return; // Reject invalid sleep duration
+      }
+      
+      // Check if total exceeds 24 hours
+      if (newSleepDuration + studyHours > 24) {
+        setTimeWarning('Sleep Duration + Study/Work Hours cannot exceed 24 hours in a day. Please reduce one of these values.');
+        return; // Don't update state
+      }
+      
+      // Valid input, update state and clear warning
+      setHealthInfo(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+      setTimeWarning('');
     } else {
       setHealthInfo(prevState => ({
         ...prevState,
@@ -69,12 +105,36 @@ function ModelPredictPage() {
   const handleAcademicInfoChange = (e) => {
     const { name, value } = e.target;
     if (name === 'studyHours') {
-      if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 24)) {
+      // If empty, just update the value
+      if (value === '') {
         setAcademicInfo(prevState => ({
           ...prevState,
           [name]: value
         }));
+        setTimeWarning('');
+        return;
       }
+      
+      const newStudyHours = parseFloat(value);
+      const sleepDuration = parseFloat(healthInfo.sleepDuration) || 0;
+      
+      // Check if new study hours is valid
+      if (newStudyHours < 0 || newStudyHours > 24) {
+        return; // Reject invalid study hours
+      }
+      
+      // Check if total exceeds 24 hours
+      if (newStudyHours + sleepDuration > 24) {
+        setTimeWarning('Sleep Duration + Study/Work Hours cannot exceed 24 hours in a day. Current Sleep Duration is ' + sleepDuration + ' hours.');
+        return; // Don't update state
+      }
+      
+      // Valid input, update state and clear warning
+      setAcademicInfo(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
+      setTimeWarning('');
     } else if (name === 'gpa') {
       if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
         setAcademicInfo(prevState => ({
@@ -260,6 +320,8 @@ function ModelPredictPage() {
                 name="age"
                 value={personalInfo.age}
                 onChange={handlePersonalInfoChange}
+                min="0"
+                max="100"
               />
             </div>
             <div className="form-group">
@@ -332,6 +394,7 @@ function ModelPredictPage() {
                 max="24"
                 step="0.5"
               />
+              {timeWarning && <p className="warning-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>{timeWarning}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="dietaryHabits">Dietary Habits:</label>
@@ -416,6 +479,7 @@ function ModelPredictPage() {
                 max="24"
                 step="0.5"
               />
+              {timeWarning && <p className="warning-message" style={{ color: 'red', fontSize: '12px', marginTop: '5px' }}>{timeWarning}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="gpa">GPA:</label>
