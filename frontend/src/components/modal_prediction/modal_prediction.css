@@ -79,11 +79,126 @@
 
 .result-description {
   margin-bottom: 0;
-  line-height: 1.6;
+  line-height: 1.4;
   max-width: 800px;
   font-size: 16px;
   text-align: left;
-  white-space: pre-line;
+  white-space: normal;
+  padding: 0 10px;
+}
+
+/* Make paragraphs more compact */
+.result-description p {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+/* Container for all recommendation items */
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-left: 20px;
+}
+
+/* Recommendation items - reduce spacing */
+.recommendation-item {
+  display: flex;
+  align-items: flex-start;
+  padding-left: 5px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+/* Add custom bullet points */
+.recommendation-item::before {
+  content: "•";
+  color: #2563eb;
+  font-size: 18px;
+  position: absolute;
+  left: -15px;
+  top: 0px;
+}
+
+.recommendation-item > div {
+  flex: 1;
+}
+
+/* For smaller screens, display in single column */
+@media (max-width: 768px) {
+  .recommendations-list {
+    flex-direction: column;
+  }
+  
+  .recommendation-item {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+}
+
+/* Make recommendation titles bolder and more prominent */
+.recommendation-item strong {
+  font-weight: 700 !important;
+  color: #1F2937;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Ensure proper spacing between paragraphs and recommendation lists */
+.result-description > p {
+  margin-bottom: 10px;
+}
+
+.result-description > br + br {
+  display: block;
+  content: "";
+  margin-top: 10px;
+}
+
+/* Reduce space between paragraphs */
+.result-description br + br {
+  margin-top: 8px;
+}
+
+/* Add extra space before the first bullet point */
+.result-description br + div.recommendation-item {
+  margin-top: 5px;
+}
+
+/* New styles for bullet points and recommendation text */
+.bullet-point {
+  display: inline-block;
+  font-size: 18px;
+  color: #2563eb;
+  margin-right: 5px;
+  vertical-align: top;
+}
+
+/* Add styling for the bullet point list */
+.result-description br + .bullet-point {
+  margin-top: 5px;
+  display: inline-block;
+}
+
+/* Reduce extra space between bullets and text */
+.result-description br + br {
+  display: block;
+  content: ""; 
+  margin-top: 8px;
+}
+
+.result-description strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.result-description em {
+  font-style: italic;
 }
 
 /* Information sections container */

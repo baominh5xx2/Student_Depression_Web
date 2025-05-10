@@ -89,7 +89,68 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
                   <p>Generating personalized advice based on your information...</p>
                 </div>
               ) : (
-                <p className="result-description">{llmAdvice}</p>
+                <div className="result-description">
+                  {(() => {
+                    // Pre-process the text to properly handle formatting
+                    let formattedText = llmAdvice
+                      // Remove any bullet points (• symbol) that might be in the text
+                      .replace(/^•\s*/gm, '')
+                      .replace(/\n•\s*/g, '\n')
+                      
+                      // Convert markdown formatting
+                      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                      
+                      // Split by paragraphs 
+                      .split(/\n\n+/)
+                      .map((paragraph, pIndex) => {
+                        // Check if this paragraph contains recommendation-style text (ALL CAPS followed by colon)
+                        if (paragraph.match(/[A-Z\s]+:/) || paragraph.match(/<strong>[A-Z\s]+:<\/strong>/)) {
+                          // Split by lines to find potential recommendations
+                          const lines = paragraph.split(/\n/).filter(Boolean);
+                          
+                          // Extract any intro text
+                          let introText = '';
+                          let recommendations = lines;
+                          
+                          if (lines.length > 0 && !lines[0].match(/[A-Z\s]+:/) && !lines[0].match(/<strong>[A-Z\s]+:<\/strong>/)) {
+                            introText = lines[0];
+                            recommendations = lines.slice(1);
+                          }
+                          
+                          // Format recommendations as a proper list
+                          return `
+                            ${introText ? `<p>${introText}</p>` : ''}
+                            <div class="recommendations-list">
+                              ${recommendations.map(rec => {
+                                // Try to detect if this is a title line (either ALL CAPS: or <strong>TITLE:</strong>)
+                                let titleMatch = rec.match(/^(\s*)([A-Z][A-Z\s\-\&\+]+):(.*)/);
+                                if (!titleMatch) {
+                                  // Try to match an already-bolded title
+                                  titleMatch = rec.match(/^(\s*)<strong>([A-Z][A-Z\s\-\&\+]+):<\/strong>(.*)/);
+                                }
+                                
+                                if (titleMatch) {
+                                  return `<div class="recommendation-item">
+                                    <div><strong>${titleMatch[2]}:</strong>${titleMatch[3]}</div>
+                                  </div>`;
+                                } else {
+                                  return `<div class="recommendation-item">
+                                    <div>${rec}</div>
+                                  </div>`;
+                                }
+                              }).join('')}
+                            </div>
+                          `;
+                        } else {
+                          // Regular paragraph
+                          return `<p>${paragraph}</p>`;
+                        }
+                      }).join('');
+                    
+                    return <div dangerouslySetInnerHTML={{ __html: formattedText }} />;
+                  })()}
+                </div>
               )}
             </div>
           </div>
