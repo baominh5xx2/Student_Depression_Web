@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.history.history import router as history_router
-from app.database.mongodb import MongoDB
 from app.database.history_db import HistoryDB
 import logging
 from app.svm_lib.routes import router as svm_router
@@ -23,15 +22,14 @@ app = FastAPI(title="Model API", description="API for ML model prediction")
 
 @app.on_event("startup")
 async def startup_db_client():
-    await MongoDB.init()
-    HistoryDB.init(MongoDB.client)
-    logger.info("Đã kết nối MongoDB")
+    HistoryDB.init()
+    logger.info("Đã khởi tạo Replit DB")
 
 # Đóng kết nối khi tắt ứng dụng
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    await MongoDB.close()  # Gọi đúng method async
-    logger.info("Đã đóng kết nối MongoDB")
+    # No explicit close needed for Replit DB
+    logger.info("Đã đóng kết nối DB")
 
 # Configure CORS
 app.add_middleware(
@@ -56,8 +54,11 @@ async def root():
 @app.get("/health")
 async def health_check():
     try:
-        MongoDB.client.admin.command("ping")
-        db_status = "connected"
+        # For Replit DB, we can just check if it's initialized
+        if HistoryDB.initialized:
+            db_status = "connected"
+        else:
+            db_status = "disconnected"
     except Exception as e:
         db_status = "disconnected"
         logger.error(f"Database health check failed: {e}")

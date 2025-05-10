@@ -1,11 +1,7 @@
-import pymongo
-from pymongo.database import Database
-from pymongo.collection import Collection
+# This file is kept for compatibility but is no longer used.
+# The application has been migrated to use Replit DB instead of MongoDB.
+
 import logging
-from typing import Optional
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from dotenv import load_dotenv
 
 # Cấu hình logging
 logging.basicConfig(
@@ -14,20 +10,20 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-load_dotenv()
-
 class MongoDB:
+    """
+    This class is deprecated. 
+    The application now uses Replit DB through the history_db.py module.
+    """
     client = None
     db = None
 
     @classmethod
     async def init(cls):
-        mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
-        cls.client = AsyncIOMotorClient(mongodb_url)
-        cls.db = cls.client.depression_detection
-        await cls.client.admin.command('ping')  # Test connection
+        logger.info("MongoDB has been replaced with Replit DB")
+        pass
 
     @classmethod
     async def close(cls):
-        if cls.client:
-            cls.client.close()
+        logger.info("MongoDB has been replaced with Replit DB")
+        pass
