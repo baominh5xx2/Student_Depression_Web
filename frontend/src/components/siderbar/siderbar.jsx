@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './siderbar.css';
+import csLogo from '../../assets/cs_logo.png';
+import uitLogo from '../../assets/UIT.jpg';
 
 function Sidebar() {
   const location = useLocation();
@@ -9,7 +11,10 @@ function Sidebar() {
   return (
     <div className="sidebar-container">
       <div className="sidebar-logo-space">
-        {/* Space for logo/image */}
+        <div className="sidebar-logos">
+          <img src={csLogo} alt="CS Logo" className="sidebar-logo" />
+          <img src={uitLogo} alt="UIT Logo" className="sidebar-logo" />
+        </div>
       </div>
       <div className="sidebar-nav">
         <h2 className="sidebar-title">SUPPORT CLASSIFY DEPRESSION FOR STUDENTS</h2>

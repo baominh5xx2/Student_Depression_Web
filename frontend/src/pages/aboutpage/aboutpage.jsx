@@ -1,8 +1,6 @@
 import React from 'react';
 import Sidebar from '../../components/siderbar/siderbar';
 import './aboutpage.css';
-import csLogo from '../../assets/cs_logo.png';
-import uitLogo from '../../assets/UIT.jpg';
 
 function AboutPage() {
   // Placeholder team data - to be filled in later
@@ -37,14 +35,6 @@ function AboutPage() {
     <div className="aboutpage-container">
       <Sidebar />
       <div className="aboutpage-content">
-        <div className="logos-container">
-          <div className="logo-wrapper">
-            <img src={csLogo} alt="CS Logo" className="logo cs-logo" />
-          </div>
-          <div className="logo-wrapper">
-            <img src={uitLogo} alt="UIT Logo" className="logo uit-logo" />
-          </div>
-        </div>
         <div className="about-main-content">
           <div className="about-text">
             We are a team of Computer Science students passionate about using technology for social good. 
