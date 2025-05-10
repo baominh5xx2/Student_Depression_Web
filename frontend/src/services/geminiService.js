@@ -2,7 +2,7 @@
 import { GoogleGenAI } from '@google/genai';
 
 // API key for Gemini
-const API_KEY = 'AIzaSyBiTf362s6LZF3ZLu0A2UnsCqKrokyRiYg';
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // Initialize the API client
 const genAI = new GoogleGenAI({ apiKey: API_KEY });
