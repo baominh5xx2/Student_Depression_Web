@@ -12,8 +12,13 @@ function Sidebar() {
         {/* Space for logo/image */}
       </div>
       <div className="sidebar-nav">
-        <h2 className="sidebar-title">SUPPORT CLASSIFY DEPRESSION</h2>
+        <h2 className="sidebar-title">SUPPORT CLASSIFY DEPRESSION FOR STUDENTS</h2>
         <div className="sidebar-menu">
+          <Link to="/home" className="sidebar-item-link">
+            <div className={`sidebar-item ${currentPath === '/home' ? 'active' : ''}`}>
+              Home
+            </div>
+          </Link>
           <Link to="/model-predict" className="sidebar-item-link">
             <div className={`sidebar-item ${currentPath === '/model-predict' ? 'active' : ''}`}>
               Prediction
@@ -24,8 +29,11 @@ function Sidebar() {
               History
             </div>
           </Link>
-          <div className="sidebar-item">About</div>
-          <div className="sidebar-item">Account Management</div>
+          <Link to="/about" className="sidebar-item-link">
+            <div className={`sidebar-item ${currentPath === '/about' ? 'active' : ''}`}>
+              About
+            </div>
+          </Link>
         </div>
       </div>
     </div>

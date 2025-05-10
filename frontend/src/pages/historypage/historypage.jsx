@@ -29,6 +29,7 @@ function HistoryPage() {
           let dietaryHabits = "N/A";
           if (inputData['Dietary_Habits_Moderate'] === 1) dietaryHabits = "Moderate";
           else if (inputData['Dietary_Habits_Unhealthy'] === 1) dietaryHabits = "Unhealthy";
+          else if (inputData['Dietary_Habits_Healthy'] === 1) dietaryHabits = "Healthy";
           else if (inputData['Dietary_Habits_Others'] === 1) dietaryHabits = "Others";
           
           // Decode degree/major
@@ -38,6 +39,29 @@ function HistoryPage() {
           else if (inputData['Degree_B.Arch'] === 1) major = "Bachelor of Architecture";
           else if (inputData['Degree_BCA'] === 1) major = "Bachelor of Computer Applications";
           else if (inputData['Degree_Class12'] === 1) major = "Class 12";
+          else if (inputData['Degree_B.Pharm'] === 1) major = "Bachelor of Pharmacy";
+          else if (inputData['Degree_BSc'] === 1) major = "Bachelor of Science";
+          else if (inputData['Degree_BA'] === 1) major = "Bachelor of Arts";
+          else if (inputData['Degree_M.Tech'] === 1) major = "Master of Technology";
+          else if (inputData['Degree_PhD'] === 1) major = "Doctor of Philosophy";
+          else if (inputData['Degree_LLB'] === 1) major = "Bachelor of Laws";
+          else if (inputData['Degree_BE'] === 1) major = "Bachelor of Engineering";
+          else if (inputData['Degree_M.Ed'] === 1) major = "Master of Education";
+          else if (inputData['Degree_MSc'] === 1) major = "Master of Science";
+          else if (inputData['Degree_BHM'] === 1) major = "Bachelor of Hotel Management";
+          else if (inputData['Degree_M.Pharm'] === 1) major = "Master of Pharmacy";
+          else if (inputData['Degree_MCA'] === 1) major = "Master of Computer Applications";
+          else if (inputData['Degree_MA'] === 1) major = "Master of Arts";
+          else if (inputData['Degree_MD'] === 1) major = "Doctor of Medicine";
+          else if (inputData['Degree_MBA'] === 1) major = "Master of Business Administration";
+          else if (inputData['Degree_MBBS'] === 1) major = "Bachelor of Medicine and Bachelor of Surgery";
+          else if (inputData['Degree_M.Com'] === 1) major = "Master of Commerce";
+          else if (inputData['Degree_LLM'] === 1) major = "Master of Laws";
+          else if (inputData['Degree_B.Tech'] === 1) major = "Bachelor of Technology";
+          else if (inputData['Degree_BBA'] === 1) major = "Bachelor of Business Administration";
+          else if (inputData['Degree_ME'] === 1) major = "Master of Engineering";
+          else if (inputData['Degree_MHM'] === 1) major = "Master of Hotel Management";
+          else if (inputData['Degree_Others'] === 1) major = "Others";
           
           // Decode yes/no fields
           const suicidalThoughts = inputData['Suicidal_Thoughts'] === 1 ? "Yes" : "No";
