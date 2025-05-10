@@ -82,6 +82,8 @@
   line-height: 1.6;
   max-width: 800px;
   font-size: 16px;
+  text-align: left;
+  white-space: pre-line;
 }
 
 /* Information sections container */
@@ -197,4 +199,28 @@
   .result-description {
     font-size: 14px;
   }
+}
+
+.advice-container {
+  width: 100%;
+  margin: 10px 0;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.loading-advice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.loading-advice p {
+  font-style: italic;
+  margin: 0;
+  font-size: 15px;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogTitle, 
@@ -13,15 +13,45 @@ import {
   TableRow,
   Paper,
   Box,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import './modal_prediction.css';
+import GeminiService from '../../services/geminiService';
 
 function ModalPrediction({ open, handleClose, formData, predictionResult }) {
   // Use only the real prediction result from the API
   const isDepressed = predictionResult === true;
+  
+  // State for LLM-generated advice
+  const [llmAdvice, setLlmAdvice] = useState('');
+  const [isLoadingAdvice, setIsLoadingAdvice] = useState(false);
+  
+  // Fetch advice from Gemini API when modal opens
+  useEffect(() => {
+    // Only fetch if the modal is open and we have formData
+    if (open && formData) {
+      const getAdviceFromLLM = async () => {
+        setIsLoadingAdvice(true);
+        try {
+          const advice = await GeminiService.getAdvice({ formData, predictionResult });
+          setLlmAdvice(advice);
+        } catch (error) {
+          console.error('Failed to get advice from Gemini:', error);
+          // Fallback message
+          setLlmAdvice(isDepressed 
+            ? 'Based on the information provided, our system has detected signs of depression. We strongly recommend consulting with a mental health professional for a proper diagnosis and support.'
+            : 'Based on the information provided, our system has not detected signs of depression. However, if you\'re feeling unwell, consider speaking with a healthcare professional.');
+        } finally {
+          setIsLoadingAdvice(false);
+        }
+      };
+
+      getAdviceFromLLM();
+    }
+  }, [open, formData, predictionResult, isDepressed]);
   
   return (
     <Dialog
@@ -52,11 +82,16 @@ function ModalPrediction({ open, handleClose, formData, predictionResult }) {
               {isDepressed ? 'Depression Risk Detected' : 'No Depression Risk Detected'}
             </h2>
             
-            <p className="result-description">
-              {isDepressed 
-                ? 'Based on the information provided, our system has detected signs of depression. We strongly recommend consulting with a mental health professional for a proper diagnosis and support.'
-                : 'Based on the information provided, our system has not detected signs of depression. However, if you\'re feeling unwell, consider speaking with a healthcare professional.'}
-            </p>
+            <div className="advice-container">
+              {isLoadingAdvice ? (
+                <div className="loading-advice">
+                  <CircularProgress size={24} color="inherit" />
+                  <p>Generating personalized advice based on your information...</p>
+                </div>
+              ) : (
+                <p className="result-description">{llmAdvice}</p>
+              )}
+            </div>
           </div>
         </Box>
 
