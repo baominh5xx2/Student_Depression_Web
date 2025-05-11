@@ -158,10 +158,6 @@ function ModelPredictPage() {
     }));
   };
 
-  const handleModelChange = (e) => {
-    setSelectedModel(e.target.value);
-  };
-
   // Generate options for ratings 0-5
   const ratingOptions = Array.from({ length: 6 }, (_, i) => (
     <option key={i} value={i}>{i}</option>
@@ -538,27 +534,6 @@ function ModelPredictPage() {
               </select>
             </div>
           </div>
-        </div>
-
-        <div className="section-container">
-          <h3>AI Model Prediction</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="aiModel">Select Model:</label>
-              <select
-                id="aiModel"
-                name="aiModel"
-                value={selectedModel}
-                onChange={handleModelChange}
-              >
-                <option value="Logictis_LIB">Logictis_LIB</option>
-                <option value="Logictis_Scratch">Logictis_Scratch</option>
-                <option value="SVM_LIB">SVM_LIB</option>
-                <option value="SVM_Scratch">SVM_Scratch</option>
-              </select>
-            </div>
-          </div>
-          <p className="model-note">We recommend using SVM_LIB model</p>
         </div>
 
         {/* Submit Button */}
